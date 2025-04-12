@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAP | VOLTWAY</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Add HERE Maps CSS and JS -->
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: #333;
+        }
+        .navbar-brand i {
+            color: #0d6efd;
+        }
+        .map-container {
+            height: calc(100vh - 76px);
+            width: 100%;
+            position: relative;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .search-overlay {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 80%;
+            max-width: 600px;
+        }
+        .search-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+            background: #ccc;
+        }
+        .suggestions-container {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+    }
+
+    .suggestion-item {
+        padding: 10px 15px;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+    }
+
+    .suggestion-item:hover {
+        background-color: #f8f9fa;
+    }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-lightning-charge-fill me-2"></i>
+                VOLTWAY
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="volt.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="map.html">Map</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="evstations.html">Stations</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+   <!-- Replace both search overlay sections with this single one -->
+<div class="map-container">
+    <!-- Search Overlay -->
+    <div class="search-overlay">
+        <div class="search-box">
+            <h4 class="text-center mb-4">Search EV Charging Stations</h4>
+            <div class="input-group">
+                <input type="text" class="form-control" id="searchInput" placeholder="Enter location or station name">
+                <button class="btn btn-primary" type="button" onclick="searchLocation()">
+                    <i class="bi bi-search"></i> Search
+                </button>
+                <div class="suggestions-container" id="suggestions"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERE Map container -->
+    <div id="map"></div>
+</div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script>
+        // Initialize HERE Map
+        const platform = new H.service.Platform({
+            'apikey': 'XfiE0NbzKi0IWttfJzEVqakKL9fcH_FC9N59eweHQp0' // Replace with your API key
+        });
+    
+        // Get default map types from the platform object
+        const defaultLayers = platform.createDefaultLayers();
+    
+        // Initialize the map
+        const map = new H.Map(
+            document.getElementById('map'),
+            defaultLayers.vector.normal.map,
+            {
+                zoom: 12,
+                center: { lat: 17.3850, lng: 78.4867 } // Hyderabad coordinates
+            }
+        );
+    
+        // Add window resize handler
+        window.addEventListener('resize', () => map.getViewPort().resize());
+    
+        // Make the map interactive
+        const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+    
+        // Add UI controls
+        const ui = H.ui.UI.createDefault(map, defaultLayers);
+    
+        // Search function
+        function searchLocation() {
+            const searchInput = document.getElementById('searchInput').value.trim();
+            
+            if (!searchInput) {
+                alert('Please enter a location to search');
+                return;
+            }
+            const service = platform.getSearchService();
+    
+            // Initialize the geocoding service
+            const geocoder = platform.getSearchService();
+            service.geocode({
+        q: searchInput + ', Hyderabad, Telangana', // Add city context
+        in: 'countryCode:IND', // Limit to India
+        limit: 1
+    }, (result) => {
+        if (result.items && result.items.length > 0) {
+            const location = result.items[0].position;
+            
+            // Add marker for searched location
+            map.removeObjects(map.getObjects());
+            const locationMarker = new H.map.Marker({
+                lat: location.lat,
+                lng: location.lng
+            });
+            map.addObject(locationMarker);
+            
+            // Center and zoom map
+            map.setCenter(location);
+            map.setZoom(14);
+             // Search for stations
+             searchEvStations(location);
+        } else {
+            alert('Location not found in Hyderabad');
+        }
+    }, (error) => {
+        console.error('Geocoding error:', error);
+        alert('Error finding location');
+    });
+}
+            
+    
+        // Search for EV stations
+        function searchEvStations(location) {
+    const service = platform.getSearchService();
+    
+    service.browse({
+        at: `${location.lat},${location.lng}`,
+        categories: '700-7600-0322,700-7600-0321',
+        limit: 50,
+        radius: 10000, // Increased radius to 10km
+        lang: 'en-US'
+    }, (result) => {
+        map.removeObjects(map.getObjects());
+        // Add marker for searched location first
+        const locationMarker = new H.map.Marker({
+            lat: location.lat,
+            lng: location.lng
+        });
+        map.addObject(locationMarker);
+         // Add charging station markers
+    chargingStations.forEach(station => {
+        // Only show stations within 10km radius
+        const distance = calculateDistance(location.lat, location.lng, station.position.lat, station.position.lng);
+        if (distance <= 10) {
+            const marker = new H.map.Marker(station.position);
+        
+        if (result.items && result.items.length > 0) {
+            result.items.forEach((station) => {
+                try {
+                const marker = new H.map.Marker({
+                    lat: station.position.lat,
+                    lng: station.position.lng,
+                    data: station // Store station data in marker
+                });
+
+                // Get user's current location
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    
+                    // Create info bubble content with directions
+                    const bubbleContent = `
+                        <div style="padding: 15px; min-width: 250px;">
+                            <h5 class="mb-3">${station.title}</h5>
+                            <div class="mb-3">
+                                <strong>Address:</strong><br>
+                                ${station.address.label}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Distance:</strong> ${(station.distance / 1000).toFixed(1)} km
+                            </div>
+                            <div class="mb-3">
+                                <strong>Available Connectors:</strong><br>
+                                ⚡ Type 2 (AC)<br>
+                                ⚡ CCS2 (DC)
+                            </div>
+                            <div class="d-grid gap-2">
+                                <a href="https://www.google.com/maps/dir/${userLat},${userLng}/${station.position.lat},${station.position.lng}" 
+                                   class="btn btn-primary btn-sm" target="_blank">
+                                   <i class="bi bi-map"></i> Get Directions
+                                </a>
+                                <button class="btn btn-outline-primary btn-sm" onclick="showStationDetails('${station.id}')">
+                                    <i class="bi bi-info-circle"></i> More Details
+                                </button>
+                            </div>
+                        </div>`;
+
+                    // Add click event to marker
+                    marker.addEventListener('tap', (evt) => {
+                        // Remove any existing bubbles
+                        ui.getBubbles().forEach(bubble => ui.removeBubble(bubble));
+
+                        // Create info bubble content
+                        const bubbleContent = `
+                                <div style="padding: 15px; min-width: 250px;">
+                                    <h5 class="mb-3">${station.title || 'EV Charging Station'}</h5>
+                                    <div class="mb-3">
+                                        <strong>Address:</strong><br>
+                                        ${station.address?.label || 'Address not available'}
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Distance:</strong> ${(station.distance / 1000).toFixed(1)} km
+                                    </div>
+                                    <div class="d-grid gap-2">
+                                        <a href="https://www.google.com/maps/dir/${userLat},${userLng}/${station.position.lat},${station.position.lng}" 
+                                           class="btn btn-primary btn-sm" target="_blank">
+                                           <i class="bi bi-map"></i> Get Directions
+                                        </a>
+                                    </div>
+                                </div>`;
+                        
+                        // Create and add new bubble
+                        const bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
+                            content: bubbleContent
+                        });
+                        ui.addBubble(bubble);
+                    });
+                }, (error) => {
+                    console.error('Error getting user location:', error);
+                    // Fallback content without directions
+                    marker.addEventListener('tap', (evt) => {
+                        const bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
+                            content: `
+                                <div style="padding: 15px;">
+                                    <h5>${station.title}</h5>
+                                    <p>${station.address.label}</p>
+                                    <p>Distance: ${(station.distance / 1000).toFixed(1)} km</p>
+                                     <a href="https://www.google.com/maps/search/?api=1&query=${station.position.lat},${station.position.lng}" 
+                                           class="btn btn-primary btn-sm" target="_blank">View on Maps</a>
+                                </div>`
+                        });
+                        ui.addBubble(bubble);
+                    });
+                });
+
+                map.addObject(marker);
+            } catch (err) {
+                    console.error('Error creating marker:', err);
+                }
+            });
+ // Zoom to show all markers
+ map.getViewModel().setLookAtData({
+        bounds: new H.geo.Rect(
+            Math.min(...chargingStations.map(s => s.position.lat)),
+            Math.min(...chargingStations.map(s => s.position.lng)),
+            Math.max(...chargingStations.map(s => s.position.lat)),
+            Math.max(...chargingStations.map(s => s.position.lng))
+        )
+    });
+}
+// Helper function to calculate distance between two points
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of Earth in kilometers
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+}
+            // Fit map to show all markers
+            map.getViewModel().setLookAtData({
+                bounds: result.items.reduce((bounds, item) => {
+                    bounds.extend(item.position);
+                    return bounds;
+                }, new H.geo.Rect(0, 0, 0, 0))
+            });
+        } else {
+            alert('No charging stations found in this area');
+        }
+    }, (error) => {
+        console.error('Error searching stations:', error);
+        alert('Error searching for charging stations');
+    });
+}
+
+    
+    // Add event listener for Enter key
+    ,document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchLocation();
+        }
+    }));
+        
+    // Add autocomplete functionality
+    let debounceTimer;
+    const searchInput = document.getElementById('searchInput');
+    const suggestionsContainer = document.getElementById('suggestions');
+
+    searchInput.addEventListener('input', function(e) {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            const query = e.target.value;
+            if (query.length > 2) {
+                getAutocompleteSuggestions(query);
+            } else {
+                suggestionsContainer.style.display = 'none';
+            }
+        }, 300);
+    });
+    function getAutocompleteSuggestions(query) {
+        const service = platform.getSearchService();
+        
+        service.autosuggest({
+            q: query,
+            at: '17.3850,78.4867', // Hyderabad coordinates
+            limit: 5
+        }, (result) => {
+            suggestionsContainer.innerHTML = '';
+            
+            if (result.items.length > 0) {
+                result.items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.textContent = item.title;
+                    div.addEventListener('click', () => {
+                        searchInput.value = item.title;
+                        suggestionsContainer.style.display = 'none';
+                        searchLocation();
+                    });
+                    suggestionsContainer.appendChild(div);
+                });
+                suggestionsContainer.style.display = 'block';
+            } else {
+                suggestionsContainer.style.display = 'none';
+            }
+        }, alert);
+    }
+
+    // Close suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+            suggestionsContainer.style.display = 'none';
+        }
+    });
+}
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOLTWAY - Find EV Charging Stations in Hyderabad</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Custom styles -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #00c16e;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            background-image: url('https://www.google.com/url?sa=i&url=https%3A%2F%2Fautovista24.autovistagroup.com%2Fnews%2Fthe-most-popular-evs-across-the-world-in-the-first-half-of-2024%2F&psig=AOvVaw0HAMA9kgc5p-gLas5Y256L&ust=1744204033977000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCMDZzsDAyIwDFQAAAAAdAAAAABAJ'); /* Correct path */
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed; /* Optional: Makes the background fixed while scrolling */
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .navbar-brand i {
+            color: var(--accent-color);
+        }
+        @media (max-width: 576px) {
+    .station-card .card-body {
+        padding: 1rem;
+    }
+
+    .card-title {
+        font-size: 1rem;
+    }
+
+    .station-details {
+        font-size: 0.9rem;
+    }
+
+    .navbar-nav {
+        text-align: center;
+    }
+
+    .nav-link {
+        padding: 0.5rem 0;
+        font-size: 1rem;
+    }
+
+    .filter-card {
+        padding: 1rem;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .page-header p {
+        font-size: 1rem;
+    }
+
+    .btn-sm {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.75rem;
+    }
+}
+
+        
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('https://www.gettruepower.in/assets/website/blogs/8.png'); /* Replace with your image path */
+         background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 8rem 0;
+            position: relative;
+        }
+        
+        .hero-section h1 {
+            font-weight: 800;
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-section p {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        
+        .search-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: -100px;
+            position: relative;
+            z-index: 1000;
+        }
+        
+        .feature-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(13, 110, 253, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-icon i {
+            font-size: 1.75rem;
+            color: var(--primary-color);
+        }
+        
+        .station-card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .station-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .station-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .badge-available {
+            background-color: #00c16e;
+        }
+        
+        .badge-busy {
+            background-color: #ffc107;
+        }
+        
+        .badge-full {
+            background-color: #dc3545;
+        }
+        
+        .map-container {
+            height: 500px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .connector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .connector-card {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .connector-card:hover {
+            background-color: rgba(13, 110, 253, 0.05);
+            border-color: var(--primary-color);
+        }
+        
+        .connector-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .connector-icon i {
+            font-size: 3rem;
+            color: var(--primary-color);
+        }
+        
+        .testimonial-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            height: 100%;
+        }
+        
+        .testimonial-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        
+        .rating {
+            color: #ffc107;
+            margin-bottom: 1rem;
+        }
+        
+        .app-download {
+            background: linear-gradient(45deg, #0d6efd, #2d8fff);
+            color: white;
+            border-radius: 10px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .app-download:before {  
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-heading {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 576px) {
+    .footer .row > div {
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+    }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                <img src="logo.png" alt="VOLTWAY Logo" style="height: 24px; margin-right: 8px;">
+                <span class="fw-bold fs-5">VOLTWAY</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#map">Charger Map</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="evstations.html" target="_blank">Stations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="map.html" target="_blank">Map</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#chargers">Charger Types</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    
+        
+     <!-- Login Button - shown when not logged in -->
+     <li class="nav-item ms-lg-3" id="login-button-container">
+        <a class="btn btn-primary" href="login.html">Sign In</a>
+    </li>
+   <!-- Profile dropdown - shown when logged in -->
+   <li class="nav-item dropdown ms-lg-3" id="profile-dropdown" style="display: none;">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-person-circle me-1"></i>
+        <span id="user-display-name">User</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+        <li><a class="dropdown-item" href="#" id="profile-details-button">My Profile</a></li>
+        <li><a class="dropdown-item" href="#favorites">My Favorites</a></li>
+        <li><a class="dropdown-item" href="#history">Charging History</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="#" id="logout-button">Logout</a></li>
+    </ul>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+
+<!-- Profile Modal - This will be shown when the user clicks on My Profile -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="profileModalLabel">My Profile</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+<div class="text-center mb-4">
+    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+        <i class="bi bi-person-fill" style="font-size: 3rem;"></i>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-md-6">
+        <h6>First Name</h6>
+        <p id="profile-first-name">-</p>
+    </div>
+    <div class="col-md-6">
+        <h6>Last Name</h6>
+        <p id="profile-last-name">-</p>
+    </div>
+</div>
+<div class="mb-3">
+    <h6>Email</h6>
+    <p id="profile-email">-</p>
+</div>
+<div class="mb-3">
+    <h6>Member Since</h6>
+    <p id="profile-member-since">April 2025</p>
+</div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+<button type="button" class="btn btn-primary">Edit Profile</button>
+</div>
+</div>
+</div>
+</div>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1>Find EV Charging Stations in Hyderabad</h1>
+            <p>Locate the closest and most convenient charging stations for your electric vehicle. Plan your route efficiently and stay charged!</p>
+            <a href="#" class="btn btn-primary btn-lg px-4 me-md-2" id="find-chargers-hero">Find Chargers Now</a>
+            <a href="#about" class="btn btn-outline-light btn-lg px-4">Learn More</a>
+        </div>
+    </section>
+
+    <!-- Search Form -->
+    <section id="search" class="py-5">
+        <div class="container">
+            <div class="search-card">
+                <form>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="location" class="form-label">Your Location</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="location" value="Hyderabad, Telangana" placeholder="Enter your location">
+                                <button class="btn btn-outline-primary" type="button" id="use-current-location">
+                                    <i class="bi bi-geo-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="radius" class="form-label">Search Radius</label>
+                            <select class="form-select" id="radius">
+                                <option value="5">5 km</option>
+                                <option value="10" selected>10 km</option>
+                                <option value="20">20 km</option>
+                                <option value="50">50 km</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="connector" class="form-label">Connector Type</label>
+                            <select class="form-select" id="connector">
+                                <option value="all" selected>All Types</option>
+                                <option value="type1">Type 1 (J1772)</option>
+                                <option value="type2">Type 2 (Mennekes)</option>
+                                <option value="chademo">CHAdeMO</option>
+                                <option value="ccs">CCS</option>
+                                <option value="tesla">Tesla</option>
+                                <option value="gb-t">GB/T</option>
+                                <option value="bharat">Bharat AC</option>
+                                <option value="bharat-dc">Bharat DC</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-3 d-flex align-items-end">
+                            <button type="button" id="find-stations" class="btn btn-primary w-100">
+                                <i class="bi bi-search me-2"></i>Find
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="fw-bold mb-3">Why Choose VOLTWAY</h2>
+                    <p class="text-muted">The most comprehensive EV charging platform in Hyderabad with real-time data</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 p-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <h4>Precise Location</h4>
+                        <p class="text-muted mb-0">Find charging stations with pinpoint accuracy using our advanced location services, specifically optimized for Hyderabad.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 p-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-lightning-charge"></i>
+                        </div>
+                        <h4>Real-time Availability</h4>
+                        <p class="text-muted mb-0">Check which charging points are available right now before you make the trip.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card h-100 p-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-star"></i>
+                        </div>
+                        <h4>User Reviews</h4>
+                        <p class="text-muted mb-0">Read what other EV drivers have to say about charging stations and plan accordingly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <style>
+        .collage-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Two columns */
+            grid-gap: 10px; /* Gap between images */
+        }
+    
+        .collage-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+    
+        /* Adjustments for the larger images */
+        .collage-container .col-md-6 {
+            grid-column: span 1; /* Each takes up one column */
+        }
+    
+        /* Make the first row take full width */
+        .collage-container .col-md-4:first-child {
+            grid-column: 1 / -1; /* Takes up both columns */
+        }
+    </style>
+
+    <!-- Image Gallery -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="fw-bold mb-3">EV Charging Experience</h2>
+                    <p class="text-muted">Glimpses of electric vehicle charging stations across Hyderabad</p>
+                </div>
+            </div>
+            <div class="collage-container">
+                <img src="ev_charging_hyderabad.jpg" alt="EV Charging in Hyderabad" class="img-fluid rounded">
+                <img src="fast_charging_station.jpg" alt="Fast Charging Station" class="img-fluid rounded">
+                <img src="ev_public_charging.jpg" alt="EV Public Charging Station" class="img-fluid rounded">
+                <img src="tesla_supercharger.jpg" alt="Tesla Supercharger Station" class="img-fluid rounded">
+                <img src="modern_ev_hub.jpg" alt="Modern EV Charging Hub" class="img-fluid rounded">
+            </div>
+        </div>
+    </section>
+    <!-- Map Section -->
+    <section id="map" class="py-5 bg-light">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="fw-bold mb-3">Charging Stations in Hyderabad</h2>
+                    <p class="text-muted">Interactive map showing all available charging stations in and around Hyderabad</p>
+                </div>
+            </div>
+            <div class="map-container">
+                <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d121770.7135232455!2d78.40727002133791!3d17.49152442645965!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sall%20the%20electric%20chaging%20stations%20in%20hyderabad!5e0!3m2!1sen!2sin!4v1744118120034!5m2!1sen!2sin" 
+        width="100%" 
+        height="100%" 
+        style="border:0;" 
+        allowfullscreen="" 
+        loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+        </div>
+    </section>
+
+    <!-- Stations -->
+    <section id="stations" class="py-5">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="fw-bold mb-3">Nearby Charging Stations</h2>
+                    <p class="text-muted">Available charging stations near Hyderabad, Telangana</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <!-- Station 1 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card station-card">
+                        <div class="station-image" style="background-image: url('hitech_city_charging_hub.jpg');"></div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title mb-0">Hitech City Charging Hub</h5>
+                                <span class="badge badge-available">Available</span>
+                            </div>
+                            <p class="card-text text-muted">2.3 km away • HITEC City, Hyderabad</p>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="badge bg-primary">CCS</span>
+                                <span class="badge bg-primary">CHAdeMO</span>
+                                <span class="badge bg-primary">Type 2</span>
+                                <span class="badge bg-primary">150 kW</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-outline-primary">Details</button>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Hitech+City+Charging+Hub+Hyderabad" class="btn btn-primary" target="_blank">Navigate</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Station 2 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card station-card">
+                        <div class="station-image" style="background-image: url('banjara_hills_station.jpg');"></div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title mb-0">Banjara Hills Station</h5>
+                                <span class="badge badge-busy">Busy</span>
+                            </div>
+                            <p class="card-text text-muted">4.6 km away • Banjara Hills, Hyderabad</p>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="badge bg-primary">Type 2</span>
+                                <span class="badge bg-primary">Bharat AC</span>
+                                <span class="badge bg-primary">22 kW</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-outline-primary">Details</button>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Banjara+Hills+Station+Hyderabad" class="btn btn-primary" target="_blank">Navigate</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Station 3 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card station-card">
+                        <div class="station-image" style="background-image: url('fast_charger.jpg');"></div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title mb-0">TGSI Fast Charger</h5>
+                                <span class="badge badge-available">Available</span>
+                            </div>
+                            <p class="card-text text-muted">3.8 km away • Gachibowli, Hyderabad</p>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="badge bg-primary">CCS</span>
+                                <span class="badge bg-primary">GB/T</span>
+                                <span class="badge bg-primary">100 kW</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-outline-primary">Details</button>
+                                <a href="https://www.google.com/maps/search/?api=1&query=TGSI+Fast+Charger+Hyderabad" class="btn btn-primary" target="_blank">Navigate</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Station 4 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card station-card">
+                        <div class="station-image" style="background-image: url('tesla_charge.jpg');"></div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title mb-0">Tesla Supercharger Jubilee Hills</h5>
+                                <span class="badge badge-busy">Busy</span>
+                            </div>
+                            <p class="card-text text-muted">5.2 km away • Jubilee Hills, Hyderabad</p>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="badge bg-primary">Tesla</span>
+                                <span class="badge bg-primary">250 kW</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-outline-primary">Details</button>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Tesla+Supercharger+Jubilee+Hills+Hyderabad" class="btn btn-primary" target="_blank">Navigate</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Station 5 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card station-card">
+                        <div class="station-image" style="background-image: url('sec_charge.jpg');"></div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title mb-0">Secunderabad Central</h5>
+                                <span class="badge badge-full">Full</span>
+                            </div>
+                            <p class="card-text text-muted">8.7 km away • Secunderabad, Hyderabad</p>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="badge bg-primary">CCS</span>
+                                <span class="badge bg-primary">CHAdeMO</span>
+                                <span class="badge bg-primary">60 kW</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-outline-primary">Details</button>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Secunderabad+Central+Hyderabad" class="btn btn-primary" target="_blank">Navigate</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Station 6 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card station-card">
+                        <div class="station-image" style="background-image: url('mad_charge.jpg');"></div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title mb-0">Madhapur Tech Park</h5>
+                                <span class="badge badge-available">Available</span>
+                            </div>
+                            <p class="card-text text-muted">3.1 km away • Madhapur, Hyderabad</p>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="badge bg-primary">Type 2</span>
+                                <span class="badge bg-primary">Bharat DC</span>
+                                <span class="badge bg-primary">30 kW</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-outline-primary">Details</button>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Madhapur+Tech+Park+Hyderabad" class="btn btn-primary" target="_blank">Navigate</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="evstations.html" class="btn btn-primary btn-lg" target="_blank">Load More Stations</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Connector Types -->
+    <section id="chargers" class="py-5 bg-light">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="fw-bold mb-3">Connector Types</h2>
+                    <p class="text-muted">Different types of EV chargers available at stations across Hyderabad</p>
+                </div>
+            </div>
+            <div class="connector-grid">
+                <!-- Type 1 -->
+                <div class="connector-card">
+                    <div class="connector-icon">
+                        <i class="bi bi-plug-fill"></i>
+                    </div>
+                    <h5>Type 1 (J1772)</h5>
+                    <p class="text-muted mb-0">Single-phase AC charging up to 7.4 kW</p>
+                </div>
+                
+                <!-- Type 2 -->
+                <div class="connector-card">
+                    <div class="connector-icon">
+                        <i class="bi bi-plug-fill"></i>
+                    </div>
+                    <h5>Type 2 (Mennekes)</h5>
+                    <p class="text-muted mb-0">Three-phase AC charging up to 43 kW</p>
+                </div>
+                
+                <!-- CHAdeMO -->
+                <div class="connector-card">
+                    <div class="connector-icon">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                    </div>
+                    <h5>CHAdeMO</h5>
+                    <p class="text-muted mb-0">DC fast charging up to 62.5 kW</p>
+                </div>
+                
+                <!-- CCS -->
+                <div class="connector-card">
+                    <div class="connector-icon">
+                        <i class="bi bi-lightning-fill"></i>
+                    </div>
+                    <h5>CCS</h5>
+                    <p class="text-muted mb-0">DC fast charging up to 350 kW</p>
+                </div>
+                
+                <!-- Tesla -->
+                <div class="connector-card">
+                    <div class="connector-icon">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                    </div>
+                    <h5>Tesla</h5>
+                    <p class="text-muted mb-0">Proprietary connector for Tesla vehicles</p>
+                </div>
+                
+                <!-- GB/T -->
+                <div class="connector-card">
+                    <div class="connector-icon">
+                        <i class="bi bi-plug-fill"></i>
+                    </div>
+                    <h5>GB/T</h5>
+                    <p class="text-muted mb-0">Chinese standard for AC and DC charging</p>
+                </div>
+                
+                <!-- Bharat AC -->
+                <div class="connector-card">
+                    <div class="connector-icon">
+                        <i class="bi bi-plug-fill"></i>
+                    </div>
+                    <h5>Bharat AC</h5>
+                    <p class="text-muted mb-0">Indian standard for AC charging</p>
+                </div>
+                
+                <!-- Bharat DC -->
+                <div class="connector-card">
+                    <div class="connector-icon">
+                        <i class="bi bi-lightning-fill"></i>
+                    </div>
+                    <h5>Bharat DC</h5>
+                    <p class="text-muted mb-0">Indian standard for DC fast charging</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   <!-- Testimonials -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold mb-3">What Our Users Say</h2>
+                <p class="text-muted">Hear from EV owners using VOLTWAY in Hyderabad</p>
+            </div>
+        </div>
+        <div class="row g-4" id="testimonial-list">
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-image">
+                        <img src="/api/placeholder/200/200" alt="User" class="img-fluid">
+                    </div>
+                    <div class="rating">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <p>"VOLTWAY has been a game-changer for me in Hyderabad. I never have to worry about running out of charge while driving around the city."</p>
+                    <h5 class="mb-1">Rakesh Kumar</h5>
+                    <p class="text-muted">EV Owner</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-image">
+                        <img src="/api/placeholder/200/200" alt="User" class="img-fluid">
+                    </div>
+                    <div class="rating">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-half"></i>
+                    </div>
+                    <p>"The real-time availability feature is incredibly helpful. I can see which chargers are open before heading out."</p>
+                    <h5 class="mb-1">Priya Sharma</h5>
+                    <p class="text-muted">EV Enthusiast</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-image">
+                        <img src="/api/placeholder/200/200" alt="User" class="img-fluid">
+                    </div>
+                    <div class="rating">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star"></i>
+                    </div>
+                    <p>"I love the user reviews. It helps me choose the best charging stations based on other people's experiences."</p>
+                    <h5 class="mb-1">Srinivas Reddy</h5>
+                    <p class="text-muted">Tech Professional</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add Review Section -->
+        <div class="row mt-3">
+            <div class="col-md-8 mx-auto">
+                <h3 class="mb-3">Add Your Review</h3>
+                <form id="review-form">
+                    <div class="mb-3">
+                        <label for="reviewText" class="form-label">Your Review</label>
+                        <textarea class="form-control" id="reviewText" rows="4" placeholder="Write your review here"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="userName" class="form-label">Your Name</label>
+                        <input type="text" class="form-control" id="userName" disabled>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- About Section -->
+<section id="about" class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold mb-3">About VOLTWAY</h2>
+                <p class="text-muted">Empowering EV owners across Hyderabad</p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow-sm border-0 p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 text-center mb-4 mb-md-0">
+                            <img src="logo.png" alt="VOLTWAY Logo" class="img-fluid" style="max-width: 100px;">
+                        </div>
+                        <div class="col-md-8">
+                            <h4 class="fw-bold">VOLTWAY - Your EV Charging Companion</h4>
+                            <p class="mb-0 text-muted">
+                                VOLTWAY is a smart and intuitive platform that helps electric vehicle owners quickly find the nearest EV charging stations based on their current location. With real-time availability, user reviews, and detailed charger information, VOLTWAY ensures you're never far from your next charge. Whether you're commuting, traveling, or exploring Hyderabad, VOLTWAY keeps you powered on the go.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</section>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is logged in
+        checkLoginStatus();
+        
+        // Add event listeners
+        document.getElementById('logout-button').addEventListener('click', handleLogout);
+        document.getElementById('profile-details-button').addEventListener('click', showProfileModal);
+    });
+    // Add this to the existing script section
+document.getElementById('find-chargers-hero').addEventListener('click', function(e) {
+    e.preventDefault();
+    checkAndNavigate();
+});
+
+document.getElementById('find-stations').addEventListener('click', function() {
+    checkAndNavigate();
+});
+
+function checkAndNavigate() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser) {
+        // User is logged in, navigate to evstations.html
+        window.location.href = 'evstations.html';
+    } else {
+        // User is not logged in, navigate to signup.html
+        window.location.href = 'signup.html';
+    }
+}
+    
+    // Check login status and update UI accordingly
+    function checkLoginStatus() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        
+        const loginButtonContainer = document.getElementById('login-button-container');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const userDisplayName = document.getElementById('user-display-name');
+        
+        if (currentUser) {
+            // User is logged in
+            loginButtonContainer.style.display = 'none';
+            profileDropdown.style.display = 'block';
+            userDisplayName.textContent = `${currentUser.firstName} ${currentUser.lastName || ''}`;
+        } else {
+            // No user logged in
+            loginButtonContainer.style.display = 'block';
+            profileDropdown.style.display = 'none';
+        }
+    }
+    
+    // Show the profile modal with user details
+    function showProfileModal() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) return;
+        
+        // Populate profile modal with user data
+        document.getElementById('profile-first-name').textContent = currentUser.firstName || '-';
+        document.getElementById('profile-last-name').textContent = currentUser.lastName || '-';
+        document.getElementById('profile-email').textContent = currentUser.email || '-';
+        
+        // Create and show modal
+        const profileModal = new bootstrap.Modal(document.getElementById('profileModal'));
+        profileModal.show();
+    }
+    
+    // Handle logout
+    function handleLogout() {
+        // Remove user from local storage
+        localStorage.removeItem('currentUser');
+        
+        // Update UI
+        checkLoginStatus();
+        
+        // Optional: Show confirmation toast or message
+        alert('You have been logged out successfully.');
+    }
+</script>
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const reviewForm = document.getElementById("review-form");
+        const reviewText = document.getElementById("reviewText");
+        const userNameInput = document.getElementById("userName");
+        const testimonialList = document.getElementById("testimonial-list");
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    
+        // Set username from logged-in user
+        if (currentUser) {
+            userNameInput.value = `${currentUser.firstName} ${currentUser.lastName || ""}`;
+        }
+    
+        reviewForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+    
+            if (!currentUser) {
+                alert("Please sign in to submit a review.");
+                return;
+            }
+    
+            const review = reviewText.value.trim();
+            if (!review) {
+                alert("Please enter your review.");
+                return;
+            }
+    
+            const name = `${currentUser.firstName} ${currentUser.lastName || ""}`;
+            const newReview = document.createElement("div");
+            newReview.className = "col-md-4";
+            newReview.innerHTML = `
+                <div class="testimonial-card">
+                    <div class="testimonial-image">
+                        <img src="/api/placeholder/200/200" alt="User" class="img-fluid">
+                    </div>
+                    <div class="rating">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star"></i>
+                    </div>
+                    <p>"${review}"</p>
+                    <h5 class="mb-1">${name}</h5>
+                    <p class="text-muted">VOLTWAY User</p>
+                </div>
+            `;
+    
+            // Insert at the top
+            testimonialList.prepend(newReview);
+    
+            // Clear the textarea
+            reviewText.value = "";
+        });
+    });
+    </script>    
+</body>
+</html>

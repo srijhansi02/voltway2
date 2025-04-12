@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOLTWAY - All EV Charging Stations in Hyderabad</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Custom styles -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #00c16e;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .navbar-brand i {
+            color: var(--accent-color);
+        }
+        
+        .page-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1593941707882-a5bba14938c7?q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 4rem 0;
+            position: relative;
+        }
+        
+        .filter-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            margin-top: -30px;
+            position: relative;
+            z-index: 1000;
+        }
+        
+        .station-card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .station-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .station-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .badge-available {
+            background-color: #00c16e;
+        }
+        
+        .badge-busy {
+            background-color: #ffc107;
+        }
+        
+        .badge-full {
+            background-color: #dc3545;
+        }
+        
+        .station-details {
+            padding: 1rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .amenity-icon {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 1rem;
+            color: #6c757d;
+        }
+        
+        .amenity-icon i {
+            margin-right: 0.35rem;
+        }
+        
+        .station-timing {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .station-timing:last-child {
+            border-bottom: none;
+        }
+        
+        .pricing-badge {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-heading {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        
+        .pagination {
+            justify-content: center;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="volt.html">
+                <i class="bi bi-lightning-charge-fill me-2"></i>
+                VOLTWAY
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="volt.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="volt.html#map">Map</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">All Stations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="volt.html#chargers">Charger Types</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="volt.html#about">About</a>
+                    </li>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header text-center">
+        <div class="container">
+            <h1 class="fw-bold">All EV Charging Stations in Hyderabad</h1>
+            <p class="lead">Complete directory of electric vehicle charging stations in Hyderabad, Telangana</p>
+        </div>
+    </header>
+
+    <!-- Filter Section -->
+    <section class="py-4">
+        <div class="container">
+            <div class="filter-card">
+                <form>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="location" class="form-label">Area in Hyderabad</label>
+                            <select class="form-select" id="location">
+                                <option value="all" selected>All Areas</option>
+                                <option value="hitech-city">HITEC City</option>
+                                <option value="banjara-hills">Banjara Hills</option>
+                                <option value="jubilee-hills">Jubilee Hills</option>
+                                <option value="gachibowli">Gachibowli</option>
+                                <option value="secunderabad">Secunderabad</option>
+                                <option value="madhapur">Madhapur</option>
+                                <option value="kukatpally">Kukatpally</option>
+                                <option value="kondapur">Kondapur</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="connector" class="form-label">Connector Type</label>
+                            <select class="form-select" id="connector">
+                                <option value="all" selected>All Types</option>
+                                <option value="type1">Type 1 (J1772)</option>
+                                <option value="type2">Type 2 (Mennekes)</option>
+                                <option value="chademo">CHAdeMO</option>
+                                <option value="ccs">CCS</option>
+                                <option value="tesla">Tesla</option>
+                                <option value="gb-t">GB/T</option>
+                                <option value="bharat">Bharat AC</option>
+                                <option value="bharat-dc">Bharat DC</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="availability" class="form-label">Availability</label>
+                            <select class="form-select" id="availability">
+                                <option value="all" selected>All</option>
+                                <option value="available">Available</option>
+                                <option value="busy">Busy</option>
+                                <option value="full">Full</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="sort" class="form-label">Sort By</label>
+                            <select class="form-select" id="sort">
+                                <option value="distance" selected>Distance</option>
+                                <option value="rating">Rating</option>
+                                <option value="price">Price (Low to High)</option>
+                                <option value="power">Power (High to Low)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary">
+                            <i class="bi bi-filter me-2"></i>Apply Filters
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- About Section -->
+<section id="about" class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold mb-3">About VOLTWAY</h2>
+                <p class="text-muted">Empowering EV owners across Hyderabad</p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow-sm border-0 p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 text-center mb-4 mb-md-0">
+                            <img src="https://img.icons8.com/ios-filled/100/electric-plug.png" alt="VOLTWAY Logo" class="img-fluid" style="max-width: 100px;">
+                        </div>
+                        <div class="col-md-8">
+                            <h4 class="fw-bold">VOLTWAY - Your EV Charging Companion</h4>
+                            <p class="mb-0 text-muted">
+                                VOLTWAY is a smart and intuitive platform that helps electric vehicle owners quickly find the nearest EV charging stations based on their current location. With real-time availability, user reviews, and detailed charger information, VOLTWAY ensures you're never far from your next charge. Whether you're commuting, traveling, or exploring Hyderabad, VOLTWAY keeps you powered on the go.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+    </section>
+    
+
+    <!-- Stations Listing -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Station 1 -->
+                <div class="col-lg-6">
+                    <div class="card station-card">
+                        <div class="row g-0">
+                            <div class="col-md-5">
+                                <div class="station-image" style="background-image: url('hitech_city_charging_hub.jpg');"></div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h5 class="card-title mb-0">Hitech City Charging Hub</h5>
+                                        <span class="badge badge-available">Available</span>
+                                    </div>
+                                    <p class="card-text text-muted mb-2">2.3 km away • HITEC City, Hyderabad</p>
+                                    <div class="d-flex flex-wrap gap-2 mb-3">
+                                        <span class="badge bg-primary">CCS</span>
+                                        <span class="badge bg-primary">CHAdeMO</span>
+                                        <span class="badge bg-primary">Type 2</span>
+                                        <span class="badge bg-primary">150 kW</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="me-3">
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <span>4.8</span>
+                                        </div>
+                                        <span class="badge pricing-badge">₹16/kWh</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#details1">
+                                            View Details
+                                        </button>
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=Hitech+City+Charging+Hub+Hyderabad" class="btn btn-primary btn-sm" target="_blank">Navigate</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="collapse" id="details1">
+                            <div class="station-details">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <h6>Amenities</h6>
+                                        <div>
+                                            <span class="amenity-icon"><i class="bi bi-cup-hot"></i> Café</span>
+                                            <span class="amenity-icon"><i class="bi bi-wifi"></i> Free WiFi</span>
+                                            <span class="amenity-icon"><i class="bi bi-p-circle"></i> Parking</span>
+                                            <span class="amenity-icon"><i class="bi bi-shop"></i> Convenience Store</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Contact</h6>
+                                        <p class="mb-1"><i class="bi bi-telephone me-2"></i> +91 9876543210</p>
+                                        <p class="mb-0"><i class="bi bi-envelope me-2"></i> hitech@voltway.com</p>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <h6>Operating Hours</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="station-timing">
+                                                <span>Monday - Friday</span>
+                                                <span>24 Hours</span>
+                                            </div>
+                                            <div class="station-timing">
+                                                <span>Saturday</span>
+                                                <span>24 Hours</span>
+                                            </div>
+                                            <div class="station-timing">
+                                                <span>Sunday</span>
+                                                <span>24 Hours</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="station-timing">
+                                                <span>CCS (150 kW)</span>
+                                                <span>₹16/kWh</span>
+                                            </div>
+                                            <div class="station-timing">
+                                                <span>CHAdeMO (100 kW)</span>
+                                                <span>₹16/kWh</span>
+                                            </div>
+                                            <div class="station-timing">
+                                                <span>Type 2 (22 kW)</span>
+                                                <span>₹14/kWh</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mb-0"><small>Last updated: April 6, 2025</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Station 2 -->
+                <div class="col-lg-6">
+                    <div class="card station-card">
+                        <div class="row g-0">
+                            <div class="col-md-5">
+                                <div class="station-image" style="background-image: url('banjara_hills_station.jpg');"></div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h5 class="card-title mb-0">Banjara Hills Station</h5>
+                                        <span class="badge badge-busy">Busy</span>
+                                    </div>
+                                    <p class="card-text text-muted mb-2">4.6 km away • Banjara Hills, Hyderabad</p>
+                                    <div class="d-flex flex-wrap gap-2 mb-3">
+                                        <span class="badge bg-primary">Type 2</span>
+                                        <span class="badge bg-primary">Bharat AC</span>
+                                        <span class="badge bg-primary">22 kW</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="me-3">
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <span>4.3</span>
+                                        </div>
+                                        <span class="badge pricing-badge">₹14/kWh</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#details2">
+                                            View Details
+                                        </button>
+                                        <button class="btn btn-primary btn-sm">Navigate</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="collapse" id="details2">
+                            <div class="station-details">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <h6>Amenities</h6>
+                                        <div>
+                                            <span class="amenity-icon"><i class="bi bi-cup-hot"></i> Café</span>
+                                            <span class="amenity-icon"><i class="bi bi-wifi"></i> Free WiFi</span>
+                                            <span class="amenity-icon"><i class="bi bi-p-circle"></i> Parking</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Contact</h6>
+                                        <p class="mb-1"><i class="bi bi-telephone me-2"></i> +91 9876543211</p>
+                                        <p class="mb-0"><i class="bi bi-envelope me-2"></i> banjara@voltway.com</p>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <h6>Operating Hours</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="station-timing">
+                                                <span>Monday - Friday</span>
+                                                <span>6:00 AM - 11:00 PM</span>
+                                            </div>
+                                            <div class="station-timing">
+                                                <span>Saturday</span>
+                                                <span>6:00 AM - 11:00 PM</span>
+                                            </div>
+                                            <div class="station-timing">
+                                                <span>Sunday</span>
+                                                <span>8:00 AM - 10:00 PM</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="station-timing">
+                                                <span>Type 2 (22 kW)</span>
+                                                <span>₹14/kWh</span>
+                                            </div>
+                                            <div class="station-timing">
+                                                <span>Bharat AC (15 kW)</span>
+                                                <span>₹14/kWh</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mb-0"><small>Last updated: April 5, 2025</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Station 3 -->
+                <div class="col-lg-6">
+                    <div class="card station-card">
+                        <div class="row g-0">
+                            <div class="col-md-5">
+                                <div class="station-image" style="background-image: url('fast_charger.jpg');"></div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h5 class="card-title mb-0">TGSI Fast Charger</h5>
+                                        <span class="badge badge-available">Available</span>
+                                    </div>
+                                    <p class="card-text text-muted mb-2">3.8 km away • Gachibowli, Hyderabad</p>
+                                    <div class="d-flex flex-wrap gap-2 mb-3">
+                                        <span class="badge bg-primary">CCS</span>
+                                        <span class="badge bg-primary">GB/T</span>
+                                        <span class="badge bg-primary">100 kW</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="me-3">
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <span>4.5</span>
+                                        </div>
+                                        <span class="badge pricing-badge">₹15/kWh</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#details3">
+                                            View Details
+                                        </button>
+                                        <button class="btn btn-primary btn-sm">Navigate</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="collapse" id="details3">
+                            <div class="station-details">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <h6>Amenities</h6>
+                                        <div>
+                                            <span class="amenity-icon"><i class="bi bi-p-circle"></i> Parking</span>
+                                            <span class="amenity-icon"><i class="bi bi-shop"></i> Convenience Store</span>
+                                            <span class="amenity-icon"><i class="bi bi-shield-check"></i> 24/7 Security</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Contact</h6>
+                                        <p class="mb-1"><i class="bi bi-telephone me-2"></i> +91 9876543212</p>
+                                        <p class="mb-0"><i class="bi bi-envelope me-2"></i> tgsi@voltway.com</p>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <h6>Operating Hours</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="station-timing">
+                                                <span>Monday - Friday</span>
+                                                <span>24 Hours</span>
+                                            </div>
+                                            <div class="station-timing">
+                                                <span>Saturday</span>
+                                                <span>24 Hours</span>
+                                            </div>
+                                            <div class="station-timing">
+                                                <span>Sunday</span>
+                                                <span>24 Hours</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="station-timing">
+                                                <span>CCS (100 kW)</span>
+                                                <span>₹15/kWh</span>
+                                            </div>
+                                            <div class="station-timing">
+                                                <span>GB/T (100 kW)</span>
+                                                <span>₹15/kWh</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mb-0"><small>Last updated: April 7, 2025</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Station 4 -->
+                <div class="col-lg-6">
+                    <div class="card station-card">
+                        <div class="row g-0">
+                            <div class="col-md-5">
+                                <div class="station-image" style="background-image: url('tesla_charge.jpg');"></div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h5 class="card-title mb-0">Tesla Supercharger Jubilee Hills</h5>
+                                        <span class="badge badge-busy">Busy</span>
+                                    </div>
+                                    <p class="card-text text-muted mb-2">5.2 km away • Jubilee Hills, Hyderabad</p>
+                                    <div class="d-flex flex-wrap gap-2 mb-3">
+                                        <span class="badge bg-primary">Tesla</span>
+                                        <span class="badge bg-primary">250 kW</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="me-3">
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <span>4.9</span>
+                                        </div>
+                                        <span class="badge pricing-badge">₹18/kWh</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#details4">
+                                            View Details
+                                        </button>
+                                        <button class="btn btn-primary btn-sm">Navigate</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="collapse" id="details4">
+                            <div class="station-details">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <h6>Amenities</h6>
+                                        <div>
+                                            <span class="amenity-icon"><i class="bi bi-cup-hot"></i> Coffee Shop</span>
+                                            <span class="amenity-icon"><i class="bi bi-wifi"></i> Free WiFi</span>
+                                            <span class="amenity-icon"><i class="bi bi-p-circle"></i> Parking</span>
+                                            <span class="amenity-icon"><i class="bi bi-shield-check"></i> 24/7 Security</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Contact</h6>
+                                        <p class="mb-1"><i class="bi bi-telephone me-2"></i> +91 9876543213</p>
+                                        <p class="mb-0"><i class="bi bi-envelope me-2"></i> tesla@voltway.com</p>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <h6>Operating Hours</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="station-timing">
+                                                <span>Monday - Friday</span>
+                                                <span>24 Hours</span>
+                                            </div>
+                                            <div class="station-timing">
+                                                <span>Saturday</span>
+                                                <span>24 Hours</span>
+                                            </div>
+                                            <div class="station-timing">
+                                                <span>Sunday</span>
+                                                <span>24 Hours</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="station-timing">
+                                                <span>Tesla (250 kW)</span>
+                                                <span>₹18/kWh</span>
+                                            </div>
+                                            <div class="station-timing">
+                                                <span>Non-Tesla vehicles</span>
+                                                <span>₹20/kWh</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mb-0"><small>Last updated: April 8, 2025</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+               
+
+<!-- Station 5  -->
+<div class="col-lg-6">
+    <div class="card station-card">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <div class="station-image" style="background-image: url('sec_charge.jpg');"></div>
+            </div>
+            <div class="col-md-7">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title mb-0">Secunderabad Central</h5>
+                        <span class="badge badge-full">Full</span>
+                    </div>
+                    <p class="card-text text-muted mb-2">8.7 km away • Secunderabad, Hyderabad</p>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-primary">CCS</span>
+                        <span class="badge bg-primary">Bharat DC</span>
+                        <span class="badge bg-primary">60 kW</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <span>4.1</span>
+                        </div>
+                        <span class="badge pricing-badge">₹15/kWh</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#details5">
+                            View Details
+                        </button>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Secunderabad+Central+Station+Hyderabad" class="btn btn-primary btn-sm" target="_blank">Navigate</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="collapse" id="details5">
+            <div class="station-details">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6>Amenities</h6>
+                        <div>
+                            <span class="amenity-icon"><i class="bi bi-cup-hot"></i> Café</span>
+                            <span class="amenity-icon"><i class="bi bi-wifi"></i> Free WiFi</span>
+                            <span class="amenity-icon"><i class="bi bi-p-circle"></i> Parking</span>
+                            <span class="amenity-icon"><i class="bi bi-shop"></i> Mall Access</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Contact</h6>
+                        <p class="mb-1"><i class="bi bi-telephone me-2"></i> +91 9876543214</p>
+                        <p class="mb-0"><i class="bi bi-envelope me-2"></i> secunderabad@voltway.com</p>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <h6>Operating Hours</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="station-timing">
+                                <span>Monday - Friday</span>
+                                <span>8:00 AM - 10:00 PM</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Saturday</span>
+                                <span>8:00 AM - 11:00 PM</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Sunday</span>
+                                <span>9:00 AM - 9:00 PM</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="station-timing">
+                                <span>CCS (60 kW)</span>
+                                <span>₹15/kWh</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Bharat DC (30 kW)</span>
+                                <span>₹15/kWh</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="mb-0"><small>Last updated: April 2, 2025</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Station 6 -->
+<div class="col-lg-6">
+    <div class="card station-card">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <div class="station-image" style="background-image: url('kukatpally_station.jpg');"></div>
+            </div>jpg
+            <div class="col-md-7">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title mb-0">Kukatpally EV Hub</h5>
+                        <span class="badge badge-available">Available</span>
+                    </div>
+                    <p class="card-text text-muted mb-2">7.1 km away • Kukatpally, Hyderabad</p>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-primary">CCS</span>
+                        <span class="badge bg-primary">Type 2</span>
+                        <span class="badge bg-primary">Bharat AC</span>
+                        <span class="badge bg-primary">120 kW</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <span>4.6</span>
+                        </div>
+                        <span class="badge pricing-badge">₹16/kWh</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#details6">
+                            View Details
+                        </button>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Kukatpally+EV+Hub+Hyderabad" class="btn btn-primary btn-sm" target="_blank">Navigate</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="collapse" id="details6">
+            <div class="station-details">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6>Amenities</h6>
+                        <div>
+                            <span class="amenity-icon"><i class="bi bi-cup-hot"></i> Café</span>
+                            <span class="amenity-icon"><i class="bi bi-wifi"></i> Free WiFi</span>
+                            <span class="amenity-icon"><i class="bi bi-p-circle"></i> Parking</span>
+                            <span class="amenity-icon"><i class="bi bi-shop"></i> Convenience Store</span>
+                            <span class="amenity-icon"><i class="bi bi-shield-check"></i> 24/7 Security</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Contact</h6>
+                        <p class="mb-1"><i class="bi bi-telephone me-2"></i> +91 9876543215</p>
+                        <p class="mb-0"><i class="bi bi-envelope me-2"></i> kukatpally@voltway.com</p>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <h6>Operating Hours</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="station-timing">
+                                <span>Monday - Friday</span>
+                                <span>24 Hours</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Saturday</span>
+                                <span>24 Hours</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Sunday</span>
+                                <span>24 Hours</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="station-timing">
+                                <span>CCS (120 kW)</span>
+                                <span>₹16/kWh</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Type 2 (22 kW)</span>
+                                <span>₹14/kWh</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Bharat AC (15 kW)</span>
+                                <span>₹14/kWh</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="mb-0"><small>Last updated: April 7, 2025</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Station 7 -->
+<div class="col-lg-6">
+    <div class="card station-card">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <div class="station-image" style="background-image: url('madhapur_charge.jpg');"></div>
+            </div>
+            <div class="col-md-7">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title mb-0">Madhapur Tech Park</h5>
+                        <span class="badge badge-available">Available</span>
+                    </div>
+                    <p class="card-text text-muted mb-2">3.5 km away • Madhapur, Hyderabad</p>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-primary">CCS</span>
+                        <span class="badge bg-primary">CHAdeMO</span>
+                        <span class="badge bg-primary">Type 2</span>
+                        <span class="badge bg-primary">180 kW</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <span>4.7</span>
+                        </div>
+                        <span class="badge pricing-badge">₹17/kWh</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#details7">
+                            View Details
+                        </button>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Madhapur+Tech+Park+Hyderabad" class="btn btn-primary btn-sm" target="_blank">Navigate</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="collapse" id="details7">
+            <div class="station-details">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6>Amenities</h6>
+                        <div>
+                            <span class="amenity-icon"><i class="bi bi-cup-hot"></i> Premium Café</span>
+                            <span class="amenity-icon"><i class="bi bi-wifi"></i> High-Speed WiFi</span>
+                            <span class="amenity-icon"><i class="bi bi-p-circle"></i> Covered Parking</span>
+                            <span class="amenity-icon"><i class="bi bi-shop"></i> Tech Store</span>
+                            <span class="amenity-icon"><i class="bi bi-shield-check"></i> 24/7 Security</span>
+                            <span class="amenity-icon"><i class="bi bi-laptop"></i> Work Stations</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Contact</h6>
+                        <p class="mb-1"><i class="bi bi-telephone me-2"></i> +91 9876543216</p>
+                        <p class="mb-0"><i class="bi bi-envelope me-2"></i> madhapur@voltway.com</p>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <h6>Operating Hours</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="station-timing">
+                                <span>Monday - Friday</span>
+                                <span>24 Hours</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Saturday</span>
+                                <span>24 Hours</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Sunday</span>
+                                <span>24 Hours</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="station-timing">
+                                <span>CCS (180 kW)</span>
+                                <span>₹17/kWh</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>CHAdeMO (120 kW)</span>
+                                <span>₹17/kWh</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Type 2 (22 kW)</span>
+                                <span>₹15/kWh</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="mb-0"><small>Last updated: April 8, 2025</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Station 8 -->
+<div class="col-lg-6">
+    <div class="card station-card">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <div class="station-image" style="background-image: url('kondapur_plaza.jpg');"></div>
+            </div>
+            <div class="col-md-7">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title mb-0">Kondapur Plaza</h5>
+                        <span class="badge badge-busy">Busy</span>
+                    </div>
+                    <p class="card-text text-muted mb-2">5.8 km away • Kondapur, Hyderabad</p>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-primary">Type 2</span>
+                        <span class="badge bg-primary">Bharat AC</span>
+                        <span class="badge bg-primary">GB/T</span>
+                        <span class="badge bg-primary">50 kW</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <span>4.2</span>
+                        </div>
+                        <span class="badge pricing-badge">₹14/kWh</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#details8">
+                            View Details
+                        </button>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Kondapur+Plaza+Hyderabad" class="btn btn-primary btn-sm" target="_blank">Navigate</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="collapse" id="details8">
+            <div class="station-details">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6>Amenities</h6>
+                        <div>
+                            <span class="amenity-icon"><i class="bi bi-cup-hot"></i> Food Court</span>
+                            <span class="amenity-icon"><i class="bi bi-wifi"></i> Free WiFi</span>
+                            <span class="amenity-icon"><i class="bi bi-p-circle"></i> Parking</span>
+                            <span class="amenity-icon"><i class="bi bi-shop"></i> Shopping Mall</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Contact</h6>
+                        <p class="mb-1"><i class="bi bi-telephone me-2"></i> +91 9876543217</p>
+                        <p class="mb-0"><i class="bi bi-envelope me-2"></i> kondapur@voltway.com</p>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <h6>Operating Hours</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="station-timing">
+                                <span>Monday - Friday</span>
+                                <span>9:00 AM - 10:00 PM</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Saturday</span>
+                                <span>9:00 AM - 11:00 PM</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Sunday</span>
+                                <span>10:00 AM - 10:00 PM</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="station-timing">
+                                <span>Type 2 (22 kW)</span>
+                                <span>₹14/kWh</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Bharat AC (15 kW)</span>
+                                <span>₹14/kWh</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>GB/T (50 kW)</span>
+                                <span>₹16/kWh</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="mb-0"><small>Last updated: April 4, 2025</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Station 9 -->
+<div class="col-lg-6">
+    <div class="card station-card">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <div class="station-image" style="background-image: url('airport_charge.jpg');"></div>
+            </div>
+            <div class="col-md-7">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title mb-0">Airport Express</h5>
+                        <span class="badge badge-available">Available</span>
+                    </div>
+                    <p class="card-text text-muted mb-2">18.3 km away • Shamshabad, Hyderabad</p>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-primary">CCS</span>
+                        <span class="badge bg-primary">CHAdeMO</span>
+                        <span class="badge bg-primary">Type 2</span>
+                        <span class="badge bg-primary">200 kW</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <span>4.8</span>
+                        </div>
+                        <span class="badge pricing-badge">₹18/kWh</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#details9">
+                            View Details
+                        </button>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Airport+Express+Shamshabad+Hyderabad" class="btn btn-primary btn-sm" target="_blank">Navigate</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="collapse" id="details9">
+            <div class="station-details">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6>Amenities</h6>
+                        <div>
+                            <span class="amenity-icon"><i class="bi bi-cup-hot"></i> Premium Lounge</span>
+                            <span class="amenity-icon"><i class="bi bi-wifi"></i> High-Speed WiFi</span>
+                            <span class="amenity-icon"><i class="bi bi-p-circle"></i> Valet Parking</span>
+                            <span class="amenity-icon"><i class="bi bi-shop"></i> Duty-Free Shops</span>
+                            <span class="amenity-icon"><i class="bi bi-shield-check"></i> 24/7 Security</span>
+                            <span class="amenity-icon"><i class="bi bi-bell"></i> Flight Updates</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Contact</h6>
+                        <p class="mb-1"><i class="bi bi-telephone me-2"></i> +91 9876543218</p>
+                        <p class="mb-0"><i class="bi bi-envelope me-2"></i> airport@voltway.com</p>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <h6>Operating Hours</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="station-timing">
+                                <span>Monday - Friday</span>
+                                <span>24 Hours</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Saturday</span>
+                                <span>24 Hours</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Sunday</span>
+                                <span>24 Hours</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="station-timing">
+                                <span>CCS (200 kW)</span>
+                                <span>₹18/kWh</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>CHAdeMO (150 kW)</span>
+                                <span>₹18/kWh</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Type 2 (22 kW)</span>
+                                <span>₹16/kWh</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="mb-0"><small>Last updated: April 8, 2025</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Station 10 -->
+<div class="col-lg-6">
+    <div class="card station-card">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <div class="station-image" style="background-image: url('financial_district.jpg');"></div>
+            </div>
+            <div class="col-md-7">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title mb-0">Financial District Hub</h5>
+                        <span class="badge badge-available">Available</span>
+                    </div>
+                    <p class="card-text text-muted mb-2">7.9 km away • Financial District, Hyderabad</p>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-primary">CCS</span>
+                        <span class="badge bg-primary">Type 2</span>
+                        <span class="badge bg-primary">GB/T</span>
+                        <span class="badge bg-primary">120 kW</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <span>4.5</span>
+                        </div>
+                        <span class="badge pricing-badge">₹16/kWh</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#details10">
+                            View Details
+                        </button>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Financial+District+Hub+Hyderabad" class="btn btn-primary btn-sm" target="_blank">Navigate</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="collapse" id="details10">
+            <div class="station-details">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6>Amenities</h6>
+                        <div>
+                            <span class="amenity-icon"><i class="bi bi-cup-hot"></i> Business Lounge</span>
+                            <span class="amenity-icon"><i class="bi bi-wifi"></i> Free WiFi</span>
+                            <span class="amenity-icon"><i class="bi bi-p-circle"></i> Premium Parking</span>
+                            <span class="amenity-icon"><i class="bi bi-laptop"></i> Work Stations</span>
+                            <span class="amenity-icon"><i class="bi bi-shield-check"></i> 24/7 Security</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Contact</h6>
+                        <p class="mb-1"><i class="bi bi-telephone me-2"></i> +91 9876543219</p>
+                        <p class="mb-0"><i class="bi bi-envelope me-2"></i> financial@voltway.com</p>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <h6>Operating Hours</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="station-timing">
+                                <span>Monday - Friday</span>
+                                <span>6:00 AM - 11:00 PM</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Saturday</span>
+                                <span>7:00 AM - 10:00 PM</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Sunday</span>
+                                <span>8:00 AM - 9:00 PM</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="station-timing">
+                                <span>CCS (120 kW)</span>
+                                <span>₹16/kWh</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>Type 2 (22 kW)</span>
+                                <span>₹14/kWh</span>
+                            </div>
+                            <div class="station-timing">
+                                <span>GB/T (60 kW)</span>
+                                <span>₹15/kWh</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="mb-0"><small>Last updated: April 6, 2025</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Station 11 -->
+<div class="col-lg-6">
+    <div class="card station-card">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <div class="station-image" style="background-image: url('begumpet_express.jpg');"></div>
+            </div>
+            <div class="col-md-7">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title mb-0">Begumpet Express</h5>
+                        <span class="badge badge-busy">Busy</span>
+                    </div>
+                    <p class="card-text text-muted mb-2">6.2 km away • Begumpet, Hyderabad</p>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-primary">CCS</span>
+                        <span class="badge bg-primary">CHAdeMO</span>
+                        <span class="badge bg-primary">90 kW</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3">
+                            <i class="bi bi-cup-
+                            <span>4.4</span>
+                        </div>
+                        <span class="badge pricing-badge">₹15/kWh</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#details11">
+                            View Details
+                        </button>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Begumpet+Express+Hyderabad" class="btn btn-primary btn-sm" target="_blank">Navigate</a>\
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+</html>          
